@@ -1,3 +1,5 @@
+<img src="https://help.veracode.com/internal/api/webapp/header/logo" width="200" /><br>  
+  
 # Veracode manual for GitHub
 
 ## Introduction
@@ -27,9 +29,9 @@ A basic script using a wrapper is documented __[at Veracode help center](https:/
 `java -jar vosp-api-wrapper-java<version>.jar -action uploadandscan -vid <Veracode API ID> -vkey <Veracode API key> -appname myapp -createprofile true -teams myteam -criticality VeryHigh -sandboxname sandboxA -createsandbox true -version <unique version> -scantimeout 30 -selectedpreviously true -filepath /workspace/myapp.jar`
 
 To use the above script within a GitHub workflow we will need to download the latest version of the API Wrapper and run the above script.
-<details>
-<summary>See example</summary>
-<p>
+    
+Example  
+  
 
 ```yaml
 name: Veracode Static Scan
@@ -67,11 +69,9 @@ jobs:
         run: |
           java -jar VeracodeJavaAPI.jar -action uploadandscan -vid ${{secrets.VERACODE_ID}} -vkey ${{secrets.VERACODE_KEY}} -appname ${{ github.repository }} -createprofile true -teams teamA -criticality VeryHigh -sandboxname sandboxA -createsandbox true -version ${{ github.run_id }} -scantimeout 30 -selectedpreviously true -filepath /workspace/app.zip
 ```
-</p>
-</details>
-<br/>
+      
 
-> :grey_exclamation: The above is good to know, however, it is better to use one of the other options below
+> The above is good to know, however, it is better to use one of the other options below
 
 #### Pre-built Docker Image
 Veracode released and maintain a set of public Docker Images which are available at __[DockerHub](https://hub.docker.com/u/veracode)__. One of these has the API Wrapper pre-packaged and does not requires the convoluted download script.
@@ -79,9 +79,9 @@ Veracode released and maintain a set of public Docker Images which are available
 An example using the Docker image use can be found here:
 - [https://github.com/lerer-veracode/verademo-java/blob/test-policy-scan-using-docker/.github/workflows/upload-and-scan.yml](https://github.com/lerer-veracode/verademo-java/blob/test-policy-scan-using-docker/.github/workflows/upload-and-scan.yml)
 
-<details>
-<summary>See example</summary>
-<p>
+    
+Example  
+  
 
 ```yaml
 name: Veracode Static Scan
@@ -118,19 +118,17 @@ jobs:
           java -jar /opt/veracode/api-wrapper.jar -vid ${{secrets.VERACODE_ID}} -vkey ${{secrets.VERACODE_KEY}} -action UploadAndScan -createprofile true -appname ${{ github.repository }} -version "${{ github.run_id }}" -sandboxname ${{needs.generate-sandbox-name.outputs.sandbox-name}} -createsandbox true  -scantimeout 30 -filepath ./verademo.war
 
 ```
-</p>
-</details>
-<br/>
+      
 
-> :bulb: The above is also example using multiple jobs with shared artifacts between them
+> The above is also example using multiple jobs with shared artifacts between them
 
 #### GitHub Action
 An easier way to incorporate the upload and scan into a workflow is using Veracode supported __[upload-and-scan GitHub action](https://github.com/marketplace/actions/veracode-upload-and-scan)__
 
 To write a workflow with the official action we can use the documentation in the action page
-<details>
-<summary>See example</summary>
-<p>
+    
+Example  
+  
 
 ```yaml
 name: Veracode Static Scan
@@ -178,8 +176,7 @@ jobs:
           # business criticality - policy selection
           criticality: "High"
 ```
-</p>
-</details>
+  
 
 #### Align sandbox name with branch name (Optional)
 If you look into the above example, you'll noticed the sandbox name is a fixed name. A fixed sandbox name will not do well in the long run as we probably want to scan different changes/versions in a different sandboxes.
@@ -189,10 +186,8 @@ An alternative to that is to align the sandbox name with the repository branch n
 Example workflow:
 - [https://github.com/lerer-veracode/verademo-java/blob/test-policy-scan-using-docker/.github/workflows/upload-and-scan.yml](https://github.com/lerer-veracode/verademo-java/blob/test-policy-scan-using-docker/.github/workflows/upload-and-scan.yml)
 
-<details>
-<summary>Inline example</summary>
-<p>
-
+Example  
+  
 ```yaml
 name: Veracode Static Scan
 
@@ -264,11 +259,9 @@ jobs:
           # business criticality - policy selection
           criticality: "High"
 ```
-</p>
-</details>
-<br/>
+      
 
-> :bulb: - The above example uses multiple jobs definition which we will explain further at the [Flow Control section](#flow-control) section
+> The above example uses multiple jobs definition which we will explain further at the [Flow Control section](#flow-control) section
 
 ### Pipeline Scan
 #### Script
@@ -279,9 +272,9 @@ The basic script for Pipeline documented __[at the Veracode help center](https:/
 A more advanced and context aware options are documented __[here](https://help.veracode.com/r/r_pipeline_scan_commands)__. 
 
 Within a Github workflow we can add the above scan script right after a step to download the latest Pipeline Scan code.
-<details>
-<summary>See example</summary>
-<p>
+    
+Example  
+  
 
 ```yaml
 name: Veracode Pipeline Scan
@@ -317,11 +310,9 @@ jobs:
         continue-on-error: true
         run: java -jar ./dls/pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_ID}}" --veracode_api_key "${{secrets.VERACODE_KEY}}" --file "result.zip" -jo true -so true --project_url https://www.github.com/$GITHUB_REPOSITORY -p $GITHUB_REPOSITORY -r $GITHUB_REF
 ```
-</p>      
-</details> 
-<br/>
+  
 
-> :point_right: - it is recommended to include the application name and if possible the sandbox or branch name in the pipeline scan attribute to help with the platform reports. [-p \<project name/repository name\>] [-r \<project ref/branch name\>]
+> It is recommended to include the application name and if possible the sandbox or branch name in the pipeline scan attribute to help with the platform reports. [-p \<project name/repository name\>] [-r \<project ref/branch name\>]
 
 #### Pre-built Docker Image
 Similar to what we have for Upload-and-Scan docker image - we also have a __[Pipeline Scan](https://hub.docker.com/r/veracode/pipeline-scan)__ image.
@@ -330,10 +321,8 @@ An example of scan using that image can be found at:
 - [https://github.com/julz0815/Verademo/blob/master/.github/workflows/development_branch.yml](https://github.com/julz0815/Verademo/blob/master/.github/workflows/development_branch.yml)
 
 
-<details>
-<summary>See inline example</summary>
-<p>
-
+Eexample  
+  
 ```yaml
 name: Veracode Pipeline Scan
 
@@ -385,9 +374,7 @@ jobs:
           path: filtered_results.json
 
 ```
-</p>
-</details>
-<br/>
+      
 
 ### Agent-Based SCA
 #### Script
@@ -402,9 +389,9 @@ As all of our integrations, more advanced scan options are documented in our [he
 For Agent-Based SCA (security scanning of 3<sup>rd</sup> party components) solution we have a very simple script which can easily put in a workflow.
 
 
-<details>
-<summary>See example</summary>
-<p>
+    
+Example  
+  
 
 ```yaml
 name: SCA on change in dependencies definition
@@ -438,11 +425,9 @@ jobs:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
         run: curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan --quick
 ```
-</p>      
-</details> 
-<br/>
+  
 
-> :bulb: The above example script is using a very specific trigger for changes in TypeScript/JavaScript packaging definition file __`package-lock.json`__. Different programming language will require different __`on`__ scan trigger settings.
+> The above example script is using a very specific trigger for changes in TypeScript/JavaScript packaging definition file __`package-lock.json`__. Different programming language will require different __`on`__ scan trigger settings.
 
 #### GitHub Action
 The is an unofficial community authored GitHub Action to run the Agent-Based scan which allows scanning and break build base on finding with specific CVSS
@@ -450,9 +435,9 @@ The is an unofficial community authored GitHub Action to run the Agent-Based sca
 See more details at the GitHub marketplace page of the __[Veracode SCA GitHub Action](https://github.com/marketplace/actions/veracode-software-composition-analysis)__
 
 
-<details>
-<summary>See example</summary>
-<p>
+    
+Example  
+  
 
 ```yaml
 name: Veracode SCA Scan
@@ -482,11 +467,7 @@ jobs:
           create-issues: false 
           fail-on-cvss: 3
 ```
-</p>      
-</details> 
-
-<hr/>
-
+  
 ## Import Findings
 
 With our different Static scanning, we now have the ability to import the findings using different techniques
@@ -499,9 +480,7 @@ To do that we can utilize build-in GitHub scripting functionality. (This is not 
 See __[basic example](https://github.com/Lerer/veracode-pipeline-PR-comment)__
 
 
-<details>
-<summary>Another inline example</summary>
-<p>
+Example  
 
 ```yaml
 name: Veracode SAST Scan
@@ -560,7 +539,7 @@ jobs:
 
 > The inline example is from a [an actual pull request](https://github.com/Lerer/verademo-sarif/pull/3)
      
-> :bulb: A different output can be done by further/differently manipulating the text output
+> A different output can be done by further/differently manipulating the text output
 
 ### Pipeline Scan as GitHub Security issues
 For Enterprise GitHug Accounts with a license for 'GitHub Advanced Security', we can import our Pipeline Scan result to the dedicated `Security` issues.
@@ -569,9 +548,9 @@ That option is available in GitHub Actions marketplace - __[Veracode Static Anal
 A (relatively older) use can be found at: [Lerer/verademo-sarif](https://github.com/Lerer/verademo-sarif/security/code-scanning)
 
 
-<details>
-<summary>See example</summary>
-<p>
+    
+Example  
+  
 
 ```yaml
 name: Pipeline Scan with creation of GitHub Security issues
@@ -626,7 +605,6 @@ jobs:
   <img src="/media/img/security-issues-action-pipeline.png" width="700px" alt="Pipeline Scan results as Security issues"/>
 </p>
 
-</details> 
 
 ### Policy findings as Security Issues
 Similar to the above, we can also import issues from our Policy/Sandbox scans in the platform.
@@ -634,10 +612,8 @@ That is again using an action.
 
 - [https://github.com/julz0815/veracode_flaw_importer](https://github.com/julz0815/veracode_flaw_importer)
 
-<details>
-<summary>Importing Platform static results as Security</summary>
-<p>
-
+Importing Platform static results as Security  
+  
 ```yaml
 name: Import Static Flaws as GitHub Security issues
 
@@ -683,8 +659,6 @@ jobs:
           sarif_file: /home/runner/work/Verademo/Verademo/fullResults.json
 
 ```
-</p>
-</details>
 
 
 ### Upload and Scan / Pipeline Scan as Issues
@@ -695,8 +669,7 @@ That is achieve by the __[Veracode scan results to GitHub issues](https://github
 Example for such issues can be seen here:
 - [https://github.com/julz0815/veracode-flaws-to-issues/issues](https://github.com/julz0815/veracode-flaws-to-issues/issues)
 
-<details>
-<summary>Screenshots</summary>
+Screenshots  
 <p>
 <p align="center">
   <img src="/media/img/issues-action-pipeline.png" width="600px" alt="Issues created from Pipeline Scan results"/>
@@ -714,9 +687,7 @@ Example for such issues can be seen here:
 As simple as it get with the Agent-Based, here is an __[example](https://github.com/lerer-veracode/verademo-java/blob/test-multi-job/.github/workflows/security_multi_job.yml)__ on how to surface SCA finding from Agent-Based SCA scan within a workflow job.
 
 
-<details>
-<summary>Part of Workflow example</summary>
-<p>
+Part of Workflow example  
 
 ```yaml
 name: Secure with SCA Agent Based
@@ -767,17 +738,15 @@ jobs:
 </p>
 <p align="center">
   <img src="/media/img/workflow-multi-jobs.png" width="700px" alt="Github workflow summary with multiple jobs"/>
-</p>
-</details>
-<br/>
+      
 
 #### Agent-Based - via GitHub Action to Issues
 With the same __[Veracode Software Composition Analysis GitHub Action](https://github.com/marketplace/actions/veracode-software-composition-analysis)__ mentioned above, you can use the Veracode Agent-based scan and convert the output to GitHub Issues.
 
 
-<details>
-<summary>See example</summary>
-<p>
+    
+Example  
+  
 
 ```yaml
 name: Veracode SCA Scan
@@ -808,14 +777,12 @@ jobs:
           fail-on-cvss: 1
           min-cvss-for-issue: 1
 ```
-</p>      
-</details> 
-<br/>
+
 
 
 Unfortunately, as of now, we don't have an official (or unofficial) __simple__ action to import finding for SCA result - Upload and Scan.
 
-:exclamation: This is a place-holder for further future implementation.
+This is a place-holder for further future implementation.
 
 <hr/>
 
@@ -843,8 +810,8 @@ The answer is in a __['Require Status Checks Before Merging' section](https://do
 For those with the right GitHub permissions, here are the __[Step-by-Step instructions](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/managing-a-branch-protection-rule)__ for setting up the Branch Protection Rules
 
 If we enable branch protection, any failed `job` within a workflow can prevent pull request from being approved  :arrow_right: We then need to make sure a failed Scan is also failing the job in the workflow:exclamation:
-<details>
-<summary>Screenshot from Github</summary>
+  
+Screenshot from Github  
 <p>
 <p align="center">
   <img src="/media/img/branch-protection-rule.png" width="700px" alt="Github branch protection rule definition example"/>
@@ -854,29 +821,26 @@ If we enable branch protection, any failed `job` within a workflow can prevent p
   <img src="/media/img/pr-merge-branch-protection.png" width="700px" alt="PR blocked due to failed checks"/>
 </p>
 </p>
-</details>
 
 ### Splitting into Jobs - Adding Checks
 Another scenario is for example if we want to have parallel different scan processes to achieve:
 - Parallel processing - faster overall flaw time
 - Or, separate statuses - for example SCA and Static.
 
-> :bulb: Every __job__ in a workflow will report back its own status as a __`check`__.
+> Every __job__ in a workflow will report back its own status as a __`check`__.
 
 We can either create separate workflows or we can create a single flow with separate to Jobs.
 
 The following example is taken from __[this implementation](https://github.com/lerer-veracode/verademo-java/blob/test-multi-job/.github/workflows/security_multi_job.yml)__
 
 
-<details>
-<summary>Example for flaw output with multiple jobs</summary>
+Example for flaw output with multiple jobs  
 <p align="center">
   <img src="/media/img/workflow-multi-jobs.png" width="700px" alt="Github workflow summary with multiple jobs"/>
 </p>
-</details>
 
-<details>
-<summary>Workflow example with parallel Agent-Based and Pipeline Scan</summary>
+
+Workflow example with parallel Agent-Based and Pipeline Scan  
 <p>
 
 ```yaml
@@ -982,10 +946,8 @@ jobs:
             core.setFailed(`Found ${process.env.VULN_NUM} Risk Vulnerabilities in your open source libraries`);
 ```
 </p>
-</details>
 
-<details>
-<summary>Example for how check will show as part of Pull Request</summary>
+Example for how check will show as part of Pull Request  
 <p align="center">
   <img src="/media/img/pr-multi-jobs.png" width="600px" alt="Github pull request checks with multiple jobs"/>
 </p>
@@ -997,13 +959,12 @@ Right after a pull request is approved, the target branch will issue a `push` ev
 
 __[Veracode SCA Auto pull request](https://help.veracode.com/r/t_configure_auto_pr)__ only apply to the following [supported languages](https://help.veracode.com/r/Understanding_Automatic_Pull_Request_Support): Java, Python, Ruby, JavaScript, Objective-C, and PHP.
 
-:exclamation: Make sure to read the instructions as it involves __[creation of Github token](https://help.veracode.com/r/t_configure_pr_github)__.
+Make sure to read the instructions as it involves __[creation of Github token](https://help.veracode.com/r/t_configure_pr_github)__.
 
 See pull Request example:
 - [https://github.com/lerer-veracode/verademo-java/pull/1](https://github.com/lerer-veracode/verademo-java/pull/1)
 
-<details>
-<summary>See inline workflow</summary>
+See inline workflow  
 <p>
 
 ```yaml
@@ -1052,9 +1013,6 @@ jobs:
   <img src="/media/img/auto-pr-sca.png" width="700px" alt="Policy scan output as GitHub Issue"/>
 </p>
 
-</p>      
-</details> 
-
 <hr/>
 
 ## Scaling in an Organization
@@ -1067,19 +1025,17 @@ Workflow define and save in each repository, however, instead of copy-paste for 
 
 In addition to shared workflows, you should also consider Organization shared Secrets
 
-> :exclamation: Keep in mind - Pipeline Scan throughput limited to  6 scans/min
+> Keep in mind - Pipeline Scan throughput limited to  6 scans/min
 
 See following shared workflows example:
 - [https://github.com/lerer-veracode/.github](https://github.com/lerer-veracode/.github/tree/main/workflow-templates)
 - [https://github.com/tjarrettveracode/.github](https://github.com/tjarrettveracode/.github)
 
-<details>
-<summary>How does it look like in workflow creation screen</summary>
+How does it look like in workflow creation screen  
 <p align="center">
   <img src="/media/img/new-workflow-screen.png" width="800px" alt="New workflow screen"/>
 </p>
 <center>For the above example, the Organization name is: <b>lerer-veracode</b></center>
-</details>
 
 ### Use Pipeline scan baseline
 Pipeline scan provides the ability to use baseline acting as the "approved mitigations" or accepted risk level which instruct the Pipeline Scan to return finding other than the ones in the provided baseline.
@@ -1089,8 +1045,7 @@ It can be useful to re-base the Baseline file after approving a Pull Request
 
 An option to handle such a rebase is to commit the baseline as a file in the repository. The advantage in this option is to have the baseline file available to developers working with the code and synchronize the baseline with their local cloned repository.
 
-<details>
-<summary>Example - commit baseline file after Approved Pull request to main/master</summary>
+Example - commit baseline file after Approved Pull request to main/master  
 <p>
 
 ```yaml
@@ -1140,11 +1095,9 @@ jobs:
           # git push origin ${{ github.head_ref }}
           git push origin ${{ github.ref }}          
 ```
-</p>
-</details>
-<br/>
+      
 
-> :bulb: Do not use a baseline file in the Pipeline scan command in order to generate a new baseline file, as the __`filtered_results.json`__ file will not output what is needed as a new baseline file 
+> Do not use a baseline file in the Pipeline scan command in order to generate a new baseline file, as the __`filtered_results.json`__ file will not output what is needed as a new baseline file 
 
 
 ### Shared Downloaded Policies for Pipeline Scan
@@ -1163,8 +1116,7 @@ Here is an option:
 2) We will download the policy from the shared repository prior to running pipeline scan in a workflow
 3) We will template the above for the easy import from any other repository
 
-<details>
-<summary>Storing policies in a shared Repository</summary>
+Storing policies in a shared Repository  
 <p>
 
 ```yaml
@@ -1213,11 +1165,8 @@ jobs:
           git commit -m "Updates Policies"
           git push origin ${{ github.ref }}       
 ```
-</p>
-</details>
-
-<details>
-<summary>Downloading the policy from another workflow</summary>
+  
+Downloading the policy from another workflow  
 <p>
 
 ```yaml
@@ -1263,11 +1212,7 @@ jobs:
 ```
 </p>
 
-
-</details>
-
-<details>
-<summary>Downloading the policy from another workflow - as template (Java)</summary>
+Downloading the policy from another workflow - as template (Java)  
 <p>
 
 ```yaml
@@ -1315,12 +1260,10 @@ jobs:
           java -jar ./dls/pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_ID}}" --veracode_api_key "${{secrets.VERACODE_KEY}}" --file "app/target/verademo.war" --policy_file "./policy.json" -jo true -so true --project_url https://www.github.com/$GITHUB_REPOSITORY -p $GITHUB_REPOSITORY -r $GITHUB_REF 
       
 ```
-</p>
-
-</details>
+  
 <br/>
 
-> :bulb: The last example is what you would put in the workflows shared via your organization __`.github`__ repository.
+> The last example is what you would put in the workflows shared via your organization __`.github`__ repository.
 
 ### Should we run a Policy Scan?
 
@@ -1328,9 +1271,8 @@ Technically the above different scan options enable you to execute direct scans 
 
 Those who are using purely Sandbox scanning prefer to use the manual "Promote Scan" in the platform as a Security control.
 
-<details>
-<summary>Example for branch name setup</summary>
-<p>
+Example for branch name setup  
+  
 
 ```yaml
 name: Veracode Static Scan
@@ -1376,16 +1318,14 @@ jobs:
   Job-A:
     .....
 ```
-</p>
-</details>
+  
 
 ### What if we do want to automatically promote - on Pull request approval?
 In a scenario which you would like to automatically promote a scan to a policy, you can use the following __[Veracode Application Sandboxes Helper Action](https://github.com/marketplace/actions/veracode-application-sandboxes-helper)__ which allows you to promote a scan from a sandbox to a policy.
 As well, you can use the same GitHub Action to also delete the Sandbox right after the scan was promoted to a Policy (maybe as a clean-up activity)
 
 
-<details>
-<summary>Example for Scan promotion on approved pull request</summary>
+Example for Scan promotion on approved pull request  
 <p>
 
 ```yaml
@@ -1422,13 +1362,11 @@ jobs:
   
   
 ```
-</p>
-</details>
-<br/>
+      
 
-> :grey_exclamation: It is up to each Organization (or business unit) to define their preferred controls and processes.
+> It is up to each Organization (or business unit) to define their preferred controls and processes.
 
-> :grey_exclamation: Organizations with integration into their CD process may decide to run a Policy Scan on what is just or about to be deploy or deliver
+> Organizations with integration into their CD process may decide to run a Policy Scan on what is just or about to be deploy or deliver
 
 <hr/>
 
@@ -1443,3 +1381,6 @@ The following list of items are feature which currently don't exist (or, I am no
 - Clean up of dated Sandboxes 
   - There is a Script by [Julian Totzek-Hallhuber](https://github.com/julz0815) which can be leveraged [here](https://github.com/julz0815/VeracodeDeleteSandboxes)
   - Should be enhancement of [Veracode Application Sandboxes Henlper Action](https://github.com/marketplace/actions/veracode-application-sandboxes-helper)
+  
+## License  
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](license)  
